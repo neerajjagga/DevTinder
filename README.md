@@ -1,68 +1,85 @@
 # DevTinder - A Tinder for Developers
 
-DevTinder is a platform designed for developers and other professionals to connect with like-minded individuals, share experiences, and grow their networks. It offers a set of APIs to facilitate user signups, profiles, and connection requests, making it easier for professionals to discover and interact with one another.
+DevTinder is a platform designed for developers and professionals to connect with like-minded individuals, share experiences, and grow their networks. It provides a set of APIs for user signups, profile management, and connection requests to help professionals interact with each other.
 
-Features
-Authentication: Secure login and registration system for users.
-Profile Management: Users can view, edit, and update their profiles, including changing their passwords.
-Connection Requests: Users can send, accept, or reject connection requests.
-User Feed: A feature to display profiles of other users and send connection requests.
+---
 
-## API Documentation
-### Authentication Routes (authRouter)
+## Features
 
-POST /signup: Register a new user.
+- **Authentication**: Secure login and registration system for users.
+- **Profile Management**: View, edit, and update profiles, including changing passwords.
+- **Connection Requests**: Send, accept, or reject connection requests from other users.
+- **User Feed**: Browse profiles of other users and send connection requests.
 
-POST /login: Login for an existing user.
+---
 
-POST /logout: Logout the current session.
+## API Endpoints
 
-### Profile Routes (profileRouter)
+### 1. Authentication Routes (`authRouter`)
 
-GET /profile/view: View the user profile.
+- **POST /signup**: Register a new user.
+- **POST /login**: Login for an existing user.
+- **POST /logout**: Logout the current session.
 
-PATCH /profile/edit: Edit the user profile (e.g., update bio, skills, etc.).
+### 2. Profile Routes (`profileRouter`)
 
-PATCH /profile/password: Change the password for the current user.
+- **GET /profile/view**: View the current user’s profile.
+- **PATCH /profile/edit**: Edit the current user’s profile (e.g., update bio, skills, etc.).
+- **PATCH /update/password**: Change the password for the current user.
 
-### Connection Request Routes (connectionReqRouter)
-POST /request/send/interested/:userId: Send an "Interested" connection request to a user.
+### 3. Connection Request Routes (`connectionReqRouter`)
 
-POST /request/send/ignored/:userId: Send an "Ignored" connection request to a user.
+- **POST /request/send/interested/:userId**: Send an "Interested" connection request to a user.
+- **POST /request/send/ignored/:userId**: Send an "Ignored" connection request to a user.
+- **POST /request/review/accepted/:requestId**: Accept a pending connection request.
+- **POST /request/review/rejected/:requestId**: Reject a pending connection request.
 
-POST /request/review/accepted/:requestId: Accept a pending connection request.
+### 4. User Routes (`userRouter`)
 
-POST /request/review/rejected/:requestId: Reject a pending connection request. 
+- **POST /user/connections**: Fetch the list of connections for the current user.
+- **POST /user/request/received**: Fetch the list of connection requests received.
+- **POST /user/feed**: Get the feed of profiles from other users to discover and connect with them.
 
-### User Routes (userRouter)
-POST /user/connections: Fetch the list of connections for the current user.
+---
 
-POST /user/request/received: Fetch the list of connection requests received.
+## Technologies Used
 
-POST /user/feed: Get the feed of profiles from other users to discover and connect with them.
+- **Node.js**: JavaScript runtime for building the backend.
+- **Express.js**: Web framework to handle API routing.
+- **MongoDB & Mongoose**: For database management and schema modeling.
+- **JWT Authentication**: For secure user authentication and session management.
 
-Technologies Used
-Node.js: JavaScript runtime for building the backend.
-Express.js: Web framework to handle API routing.
-MongoDB & Mongoose: For database management and schema modeling.
-JWT Authentication: For secure user authentication and session management.
+---
 
-## Setup Instructions :- 
+## Dependencies
 
-### git clone https://github.com/your-username/devtinder.git
+Here’s a list of the key dependencies used in this project:
 
-### Install dependencies:
+- **`bcrypt`**
+- **`body-parser`**
+- **`dotenv`**
+- **`express`**
+- **`jsonwebtoken`**
+- **`mongoose`** 
+- **`mongodb`**
+- **`cookie-parser`**
+- **`validator`** 
 
+For a full list, refer to the `package.json` file.
 
-## Create a .env file in the root directory.
+## Configure Environment Variables
 
-Set up the following environment variables:
-makefile
+Create a `.env` file in the root directory. This file will store sensitive information such as your database connection string, JWT secret key, and other environment-specific configurations.
 
-PORT=3000
-MONGO_URI=your_mongodb_connection_string
-JWT_SECRET= "DevTinder@83"
+Add the following variables to your `.env` file:
+- PORT=3000 
+- MONGO_URI=your_mongodb_uri 
+- JWT_SECRET=your_jwt_secret 
 
-## Run the application:
+## Setup Instructions
+Follow these steps to get the DevTinder API up and running on your local machine:
 
-The API will be running on http://localhost:3000 by default.
+### Clone the Repository
+
+```bash
+https://github.com/neerajjagga/DevTinder.git

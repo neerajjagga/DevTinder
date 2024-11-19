@@ -40,4 +40,7 @@ connectDB().then(() => {
     app.listen(PORT, () => {
     console.log(`Server is listening to port ${PORT}`);
 })
+}).catch((err) => {
+    console.log(err, 'Database cannot be connected');
+    process.exit(1);
 })

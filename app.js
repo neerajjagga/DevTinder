@@ -44,5 +44,3 @@ connectDB().then(() => {
     console.log(err, 'Database cannot be connected');
     process.exit(1);
 })
-
-

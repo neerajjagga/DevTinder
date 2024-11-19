@@ -24,7 +24,7 @@ DevTinder is a platform designed for developers and professionals to connect wit
 ### 2. Profile Routes (`profileRouter`)
 
 - **GET /profile/view**: View the current user’s profile.
-- **PATCH /profile/edit**: Edit the current user’s profile (e.g., update bio, skills, etc.).
+- **PATCH /profile/edit**: Edit the current user’s profile (e.g., update bio, skills, etc but not emailId and password).
 - **PATCH /update/password**: Change the password for the current user.
 
 ### 3. Connection Request Routes (`connectionReqRouter`)

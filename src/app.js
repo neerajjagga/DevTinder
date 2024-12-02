@@ -2,11 +2,21 @@ const express = require('express');
 const {connectDB} = require('./config/database');
 const app = express();
 const cookieParser = require('cookie-parser');
+const {rateLimit} = require('express-rate-limit');
+const helmet = require('helmet');
 const dotenv = require('dotenv');
 
 dotenv.config();
 const PORT = process.env.PORT || 3000;
 
+const limiter = rateLimit({
+	windowMs: 10 * 60 * 1000,
+	standardHeaders: 'draft-7',
+	legacyHeaders: false,
+})
+
+app.use(limiter);
+app.use(helmet());
 app.use(express.json());
 app.use(cookieParser());
 

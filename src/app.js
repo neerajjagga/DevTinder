@@ -39,11 +39,14 @@ app.use('/', userRouter);
 
 
 // error handling middleware
-app.use('/', (err, req, res, next) => {
-    if(err) {
-        res.status(500).send("Something went wrong " + err.message);
+app.use((err, req, res, next) => {
+    if (process.env.NODE_ENV === 'development') {
+        res.status(500).send({ message: err.message, stack: err.stack });
+    } else {
+        res.status(500).send("Something went wrong");
     }
-})
+});
+
 
 connectDB().then(() => {
     console.log("Database connected successfully");

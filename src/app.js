@@ -22,10 +22,28 @@ app.use(cookieParser());
 
 // added time log middleware
 app.use('/', (req, res, next) => {
+    const startTime = Date.now(); 
     const date = new Date();
-    console.log(`Request received for ${req.url} and method is ${req.method} at : ` + date.toLocaleString());
+
+    // Log request details
+    console.log(`[${date.toLocaleString()}] Incoming Request: 
+      Method: ${req.method} 
+      URL: ${req.url} 
+      IP: ${req.ip} 
+      Headers: ${JSON.stringify(req.headers)} 
+      Body: ${req.method === 'POST' || req.method === 'PUT' ? JSON.stringify(req.body) : 'N/A'}`);
+
+    // Listen for the response to log status code and time taken
+    res.on('finish', () => {
+        const elapsedTime = Date.now() - startTime;
+        console.log(`[${new Date().toLocaleString()}] Response: 
+          Status Code: ${res.statusCode} 
+          Elapsed Time: ${elapsedTime}ms`);
+    });
+
     next();
-})
+});
+
 
 const {authRouter} = require('./routes/auth');
 const {profileRouter} = require('./routes/profile');

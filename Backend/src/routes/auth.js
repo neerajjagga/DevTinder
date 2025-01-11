@@ -1,93 +1,131 @@
 const express = require('express');
 const User = require('../models/user');
-const {validateSignupData} = require('../utils/validation');
+const {userAuth} = require('../middlewares/auth');
+const { validateSignupData } = require('../utils/validation');
 const bcrypt = require('bcrypt');
-const validator = require('validator');
 const authRouter = express.Router();
 
 // signup
 authRouter.post("/signup", async (req, res) => {
     try {
-    // validation of data
-    validateSignupData(req);
-    
-    // encrypt the password
-    const {password, firstName, lastName, emailId, skills, age, gender} = req.body;
+        // validation of data
+        validateSignupData(req);
 
-    //  here we have to do that the email id is not registered
-    const checkEmailRegisteredAlready = await User.findOne({emailId : emailId});
+        // encrypt the password
+        const { password, firstName, lastName, emailId, skills, age, gender, about } = req.body;
 
-    // find return an empty array if no data found
-    // findOne return null if not found
-    
-    if(checkEmailRegisteredAlready) {
-        return res.status(400).send(`${emailId} is already in use`);
-    }
+        //  here we have to do that the email id is not registered
+        const checkEmailRegisteredAlready = await User.findOne({ emailId });
 
-    const hasedPassword = await bcrypt.hash(password, 10);
+        // find return an empty array if no data found
+        // findOne return null if not found
 
-    // creating a new instance of the user model
-    const user = new User({
-        firstName, 
-        lastName, 
-        emailId, 
-        password : hasedPassword, 
-        age, 
-        gender, 
-        skills
-    });
-    await user.save();
-    res.send("User created successfully");
-     
+        if (checkEmailRegisteredAlready) {
+            return res.status(400).json({
+                success: false,
+                message: "Email is already in use. Please login"
+            })
+        }
+
+        const hasedPassword = await bcrypt.hash(password, 10);
+
+        // creating a new instance of the user model
+        const user = new User({
+            firstName,
+            lastName,
+            emailId,
+            password: hasedPassword,
+            age,
+            about,
+            gender,
+            skills
+        })
+
+        await user.save();
+
+        console.log(user);
+
+        res.status(200).json({
+            success: true,
+            message: "Account created successfully",
+            user
+        })
+
     } catch (error) {
-        res.status(400).send(`Error in making new user : ${error}`);
+        console.log(error);
+
+        const statusCode = error.statusCode || 500;
+        res.status(statusCode).json({
+            success: false,
+            message: error.message
+        })
     }
 });
 
 // login
 authRouter.post('/login', async (req, res) => {
     try {
-        const {emailId, password} = req.body;
+        const { emailId, password } = req.body;
 
-        if(!emailId || !password) {
-            throw new Error("Enter emaildId and password");
-        }
-        
-        //validateEmailID
-        if(!validator.isEmail(emailId)) {
-            throw new Error('Invalid emailId');
+        if (!emailId || !password) {
+            throw ({ statusCode: 400, message: "Email and password is required" });
         }
 
-        const user = await User.findOne({emailId : emailId});
-        if(!user) {
-            throw new Error("Invalid credentials");
+        const user = await User.findOne({ emailId });
+        if (!user) {
+            throw ({ statusCode: 400, message: "Invalid credentials" });
         }
         const isPasswordValid = await user.validatePassword(password);
 
-        if(isPasswordValid) {
-            // create a JWT token
-            const token = await user.getJWT();
-
-            //Add the token to cookie and sent the response back to the user
-            res.cookie("token", token, {expires : new Date(Date.now() + 8 * 3600000)}); //{httpOnly : true} // 8 hour
-            res.send("Login successfully");
-        } else {
-            res.status(404).send("Invalid credentials");
+        if (!isPasswordValid) {
+            throw ({ statusCode: 400, message: "Invalid credentials" });
         }
+        // create a JWT token
+        const token = await user.getJWT();
+
+        //Add the token to cookie and sent the response back to the user
+        res.cookie("token", token,
+            {
+                expires: new Date(Date.now() + 8 * 3600000),
+                httpOnly: true,
+                sameSite: "strict",
+            });
+
+        res.status(200).json({
+            success: true,
+            message: "Login successfull",
+            user,
+        })
+
     } catch (error) {
-        res.status(400).send(`Login failed ${error}`);
+        const statusCode = error.statusCode || 500;
+        res.status(statusCode).json({
+            success: false,
+            message: statusCode === 400 ? error.message : "Something went wrong"
+        })
     }
 })
 
 
-authRouter.get('/logout', async (req, res) => {
-    const {token} = req.cookies;
-    if(!token) {
+authRouter.post('/logout', async (req, res) => {
+    const { token } = req.cookies;
+    if (!token) {
         return res.status(400).send("Already logout");
     }
-    res
-        .clearCookie("token")
-        .send("Logout successfully");
+    
+    res.clearCookie("token")
+    res.status(200).json({
+        success : true,
+        message : "Logout successfull"
+    })
 })
 
-module.exports = {authRouter};
+authRouter.post('/checkAuth', userAuth, async(req, res) => {
+    res.status(200).json({
+        success : true,
+        message : "success",
+        user : req.user
+    })
+})
+
+module.exports = { authRouter };

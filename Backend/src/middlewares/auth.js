@@ -10,7 +10,7 @@ const userAuth = async(req, res, next) => {
         // read the token from the request cookies
         const {token} = req.cookies;
         if(!token) {
-            throw new Error("Token is not valid");
+            throw({ statusCode : 400, message : "Token is not valid"});
         }
         // and validate the token 
         
@@ -21,12 +21,16 @@ const userAuth = async(req, res, next) => {
 
         const user = await User.findById(_id);
         if(!user) {
-            throw new Error("User not found");
+            throw({ statusCode : 400, message : "User not valid"});
         }
         req.user = user;
         next();
     } catch (error) {
-        res.status(400).send(`Error : ${error}`)
+        const statusCode = error.statusCode || 500
+        res.status(statusCode).json({
+            message : false,
+            message : statusCode === 400 ? error.message : "Something went wrong"
+        })
     }    
 }
 

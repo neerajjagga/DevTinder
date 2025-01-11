@@ -7,17 +7,15 @@ const dotenv = require('dotenv');
 dotenv.config();
 const jwt_secret_key = process.env.JWT_SECRET;
 
-const userSchema = mongoose.Schema({
+const userSchema = new mongoose.Schema({
     firstName : {
         type: String,
         required : true,
         trim : true,
-        match : /^[A-Z][a-z]{1,29}$/
     },
     lastName : {
         type: String,
         trim : true,
-        match : /^[A-Z][a-z]{1,29}$/
     },
     emailId : {
         type : String,
@@ -26,8 +24,6 @@ const userSchema = mongoose.Schema({
         unique : true, // The unique option automatically creates an index to enforce the uniqueness constraint, so you don’t need to explicitly define index: true. This is why index: true is commented out in your schema.
         lowercase : true,
         trim : true, // to avoid spacing
-        minLength : 16,
-        maxLength : 40,
         // match: /^[\w.%+-]+@[a-zA-Z\d.-]+\.[a-zA-Z]{2,6}$/
         validate(value) {
             if(!validator.isEmail(value)) {
@@ -85,12 +81,19 @@ userSchema.methods.validatePassword = async function(passwordInputByUser) {
     const isPasswordValid = await bcrypt.compare(passwordInputByUser, user.password);
     return isPasswordValid;
 }
+
 userSchema.methods.getJWT = async function() {
     const user = this;
     const token = jwt.sign({_id : user._id}, jwt_secret_key, {expiresIn : '1d'})
     return token;
 }
 
+userSchema.set('toJSON', {
+    transform : (doc, ret) => {
+        delete ret.password
+        return ret
+    }
+})
 
 const userModel = mongoose.model('User', userSchema);
 module.exports = userModel;

@@ -3,8 +3,6 @@ const { userAuth } = require('../middlewares/auth');
 const {connectionReqModel} = require('../models/connectionReq');
 const userRouter = express.Router();
 const User = require('../models/user');
-const status = require('statuses');
-const mongoose = require('mongoose');
 
 
 userRouter.get('/user/requests/received', userAuth, async(req, res) => {

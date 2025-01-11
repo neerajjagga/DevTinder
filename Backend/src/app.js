@@ -5,33 +5,30 @@ const cookieParser = require('cookie-parser');
 const {rateLimit} = require('express-rate-limit');
 const helmet = require('helmet');
 const dotenv = require('dotenv');
+const cors = require('cors');
 
 dotenv.config();
 const PORT = process.env.PORT || 3000;
 
-const limiter = rateLimit({
-	windowMs: 10 * 60 * 1000,
-	standardHeaders: 'draft-7',
-	legacyHeaders: false,
-})
+// const limiter = rateLimit({
+// 	windowMs: 10 * 60 * 1000,
+// 	standardHeaders: 'draft-7',
+// 	legacyHeaders: false,
+// })
 
-app.use(limiter);
+// app.use(limiter);
 app.use(helmet());
 app.use(express.json());
 app.use(cookieParser());
+app.use(cors({
+    origin : 'http://localhost:5173',
+    credentials : true,
+}));
 
 // added time log middleware
 app.use('/', (req, res, next) => {
     const startTime = Date.now(); 
     const date = new Date();
-
-    // Log request details
-    console.log(`[${date.toLocaleString()}] Incoming Request: 
-      Method: ${req.method} 
-      URL: ${req.url} 
-      IP: ${req.ip} 
-      Headers: ${JSON.stringify(req.headers)} 
-      Body: ${req.method === 'POST' || req.method === 'PUT' ? JSON.stringify(req.body) : 'N/A'}`);
 
     // Listen for the response to log status code and time taken
     res.on('finish', () => {
@@ -49,12 +46,13 @@ const {authRouter} = require('./routes/auth');
 const {profileRouter} = require('./routes/profile');
 const {requestRouter} = require('./routes/request');
 const {userRouter} = require('./routes/user');
+const {cloudinaryRouter} = require('./routes/cloudinary');
 
-app.use('/', authRouter);
-app.use('/', profileRouter);
-app.use('/', requestRouter);
-app.use('/', userRouter);
-
+app.use('/api/auth', authRouter);
+app.use('/api/', profileRouter);
+app.use('/api/', requestRouter);
+app.use('/api/', userRouter);
+app.use('/api', cloudinaryRouter);
 
 // error handling middleware
 app.use((err, req, res, next) => {

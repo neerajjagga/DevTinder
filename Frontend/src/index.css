@@ -1,3 +1,7 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+button.primary {
+    @apply bg-[#ff385c] p-2 w-full text-white rounded-2xl
+}

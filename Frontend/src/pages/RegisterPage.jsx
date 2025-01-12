@@ -58,10 +58,9 @@ const RegisterPage = () => {
 
     return (
         !sideArrow ? (
-              <div className='text-2xl text-white border-2 border-gray-500 self-center
-              p-5 px-10 rounded-2xl flex flex-col gap-5'>
+              <div className='text-2xl text-white border-2 border-gray-500 self-center p-5 px-10 rounded-2xl flex flex-col gap-5'>
                   <h1 className='text-center text-4xl font-semibold'>Register</h1>
-                  <form onSubmit={(e) => handleSubmit(e)} className='flex flex-col gap-5'>
+                  <form onSubmit={(e) => handleSubmit(e)} className='flex flex-col gap-5 text-xl lg:text-2xl'>
                       <div className='flex gap-2'>
                           <label className=''>
                               First Name <span className='text-red-600'>*</span>

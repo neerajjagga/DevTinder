@@ -18,6 +18,10 @@ const connectionReqSchema = mongoose.Schema({
             message : `{VALUE} is incorrect status type`
         },
         required : true
+    },
+    isRead : {
+        type : Boolean,
+        default : false,
     }
 }, {
     timestamps : true

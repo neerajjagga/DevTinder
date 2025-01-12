@@ -12,21 +12,27 @@ userRouter.get('/user/requests/received', userAuth, async(req, res) => {
         const allPendingRequests = await connectionReqModel.find({
             toUserId : loggesInUser._id,
             status : "interested",
-        }).populate("fromUserId", "firstName lastName about"); // [], '', 
+        }).populate("fromUserId", "firstName lastName about photoUrl"); 
 
         if(allPendingRequests.length === 0) {
-            return res.json({
-                message : "No pending requests"
+            return res.status(200).json({
+                success : true,
+                message : "No pending requests",
+                requests : []
             })
         }
 
-        res.json({
-            message : "Pending requests",
+        res.status(200).json({
+            success : true,
+            message : "success",
             requests : allPendingRequests
         })
             
     } catch (error) {
-        res.status(400).send("Error " + error.message);
+        return res.status(500).json({
+            success : false,
+            message : "Something went wrong",
+        })
     }
 })
 
@@ -98,9 +104,12 @@ userRouter.get('/feed', userAuth, async(req, res) => {
         .limit(limit)
         
         const countOfDocuments = users.length;
-        res.json({
+
+        res.status(200).json({
+            success : false,
+            message : "success",
+            users,
             count : countOfDocuments,
-            data : users
         })
 
     } catch (error) {

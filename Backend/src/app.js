@@ -49,9 +49,9 @@ const {userRouter} = require('./routes/user');
 const {cloudinaryRouter} = require('./routes/cloudinary');
 
 app.use('/api/auth', authRouter);
-app.use('/api/', profileRouter);
-app.use('/api/', requestRouter);
-app.use('/api/', userRouter);
+app.use('/api', profileRouter);
+app.use('/api', requestRouter);
+app.use('/api', userRouter);
 app.use('/api', cloudinaryRouter);
 
 // error handling middleware

@@ -65,30 +65,22 @@ const isvalidateToUserId = async (toUserId) => {
         return true;
 }
 
-const validateProfileImage = async(req, res, next) => {
-    try {
-        const maxSize = 5 * 1024 * 1024;
-        const validMimeTypes = ["image/jpeg", "image/png", "image/gif"];
-    
-        if(req.file.size > maxSize) {
-            return res.status(400).json({
-                success : false,
-                message : "Image size should be less than 5MB"
-            })
-            // throw({statusCode : 400, message : "Image size should be less than 5MB"})
-        }
-        if (!validMimeTypes.includes(req.file.mimetype)) {
-            return res.status(400).json({
-                success : false,
-                message: "Image format should either jpg or png"
-            })
-            // throw({ statusCode: 400, message: "Image format should either jpg or png" });
-        }
-        next();
-    } catch (error) {
-        console.log("Error coming while validating profile data");
+const validateProfileImage = (file) => { 
+    if (!file) {
+        throw { statusCode: 400, message: "No file uploaded" };
     }
-}
+
+    const maxSize = 5 * 1024 * 1024; // 5MB
+    const validMimeTypes = ["image/jpeg", "image/png", "image/gif"];
+
+    if (file.size > maxSize) {
+        throw { statusCode: 400, message: "Image size should be less than 5MB" };
+    }
+
+    if (!validMimeTypes.includes(file.mimetype)) {
+        throw { statusCode: 400, message: "Image format should be JPG, PNG, or GIF" };
+    }
+};
 
 module.exports = {
     validateSignupData,

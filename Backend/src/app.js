@@ -21,7 +21,7 @@ app.use(helmet());
 app.use(express.json());
 app.use(cookieParser());
 app.use(cors({
-    origin : 'http://localhost:5173',
+    origin: process.env.CLIENT_URL || 'http://localhost:5173',
     credentials : true,
 }));
 
@@ -56,20 +56,21 @@ app.use('/api', cloudinaryRouter);
 
 // error handling middleware
 app.use((err, req, res, next) => {
-    if (process.env.NODE_ENV === 'development') {
-        res.status(500).send({ message: err.message, stack: err.stack });
-    } else {
-        res.status(500).send("Something went wrong");
-    }
+    res.status(err.status || 500).json({
+        success: false,
+        message: err.message || "Something went wrong",
+    });
 });
 
+const startServer = async () => {
+    try {
+        await connectDB();
+        app.listen(PORT, () => {
+            console.log(`Server running on port ${PORT}`);
+        });
+    } catch (err) {
+        process.exit(1);
+    }
+};
 
-connectDB().then(() => {
-    console.log("Database connected successfully");
-    app.listen(PORT, () => {
-    console.log(`Server is listening to port ${PORT}`);
-})
-}).catch((err) => {
-    console.log(err, 'Database cannot be connected');
-    process.exit(1);
-})
+startServer();

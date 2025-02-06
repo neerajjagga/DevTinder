@@ -6,6 +6,7 @@ import bcrypt from 'bcrypt';
 import { generateTokens, setCookies, storeRefreshToken } from '../utils/user.utils.js';
 dotenv.config();
 
+
 export const signUpUser = async (req, res) => {
     try {
         const { email } = req.body;
@@ -140,3 +141,4 @@ export const refreshTokens = async (req, res) => {
         res.status(500).json({ message: error.message })
     }
 }
+

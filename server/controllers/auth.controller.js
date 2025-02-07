@@ -9,6 +9,15 @@ dotenv.config();
 
 export const signUpUser = async (req, res) => {
     try {
+        const OAuthUser = req.user;
+
+        if(OAuthUser) {
+            const { accessToken, refreshToken } = generateTokens(OAuthUser._id);
+            await storeRefreshToken(refreshToken, OAuthUser._id);
+            setCookies(accessToken, refreshToken, res);
+            return;
+        }
+
         const { email } = req.body;
         const isUserAlreadyPresent = await User.findOne({ email });
 

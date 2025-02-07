@@ -60,7 +60,6 @@ export const validateUserSchema = async (req, res, next) => {
             message: error.details[0].message,
         })
     }
-
     next();
 }
 

@@ -1,5 +1,5 @@
 import { Button } from '@mui/material';
-import { Eye, EyeOff, Loader } from 'lucide-react'
+import { Eye, EyeOff, Loader, Github } from 'lucide-react'
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { toast } from 'react-hot-toast';
@@ -17,6 +17,7 @@ const SignupPage = () => {
     const [isPasswordVisible, setIsPasswordVisible] = useState(false);
 
     const { signupUser, loading } = useUserStore();
+    const { githubLogin } = useUserStore();
 
     const handleSignup = (e) => {
         e.preventDefault();
@@ -51,6 +52,11 @@ const SignupPage = () => {
         console.log("In signup");
         console.log(formData);
     }
+
+    const handleGithubLogin = () => {
+        githubLogin();
+    };
+    
 
     return (
         <div className='h-full flex justify-center'>
@@ -102,12 +108,12 @@ const SignupPage = () => {
                                 placeholder="About"
                                 value={formData.about}
                                 onChange={(e) => {
-                                    if (e.target.value.length <= 80) {
+                                    if (e.target.value.length <= 160) {
                                         setFormData({ ...formData, about: e.target.value })
                                     }
                                 }}
                             />
-                            <span className='absolute top-2 right-5' >{80 - formData.about.length}</span>
+                            <span className='absolute top-2 right-5' >{160 - formData.about.length}</span>
                         </label>
                     </div>
 
@@ -118,6 +124,14 @@ const SignupPage = () => {
                     <Button type="submit" variant="contained" className="flex gap-2 items-center">
                         {loading && <Loader size={18} className="animate-spin" />}
                         Signup
+                    </Button>
+
+                    <Button
+                        variant="outlined"
+                        className="flex gap-2 items-center mt-3"
+                        onClick={handleGithubLogin}
+                    >
+                        <Github size={20} /> Sign in with GitHub
                     </Button>
                 </form>
             </div>

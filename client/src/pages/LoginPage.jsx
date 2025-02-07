@@ -1,5 +1,5 @@
 import { Button } from '@mui/material';
-import { Eye, EyeOff, Loader, UserSquare } from 'lucide-react'
+import { Eye, EyeOff, Loader } from 'lucide-react'
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { toast } from 'react-hot-toast';
@@ -72,7 +72,7 @@ const LoginPage = () => {
 
           <Button type="submit" variant="contained" className="flex gap-2 items-center">
             {loading && <Loader size={18} className="animate-spin" />}
-            Signup
+            Login
           </Button>
         </form>
 

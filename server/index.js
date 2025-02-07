@@ -4,7 +4,8 @@ import cors from 'cors';
 import connectDB from './config/db.js';
 const app = express();
 
-import userRouter from './routes/auth.route.js';
+import authRouter from './routes/auth.route.js';
+import userRouter from './routes/user.route.js';
 
 app.use(express.json());
 app.use(cookieParser());
@@ -13,7 +14,8 @@ app.use(cors({
     credentials : true,
 }))
 
-app.use('/api/auth', userRouter);
+app.use('/api/auth', authRouter);
+app.use('/api/user', userRouter);
 
 app.listen(3000, async () => {
     console.log("Server is listening on port 3000");

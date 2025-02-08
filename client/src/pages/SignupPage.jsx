@@ -15,6 +15,7 @@ const SignupPage = () => {
 
     const [errorInField, setErrorInField] = useState('');
     const [isPasswordVisible, setIsPasswordVisible] = useState(false);
+    const [githubLoader, setGithubLoader] = useState(false);
 
     const { signupUser, loading } = useUserStore();
     const { githubLogin } = useUserStore();
@@ -54,9 +55,10 @@ const SignupPage = () => {
     }
 
     const handleGithubLogin = () => {
+        setGithubLoader(true);
         githubLogin();
     };
-    
+
 
     return (
         <div className='h-full flex justify-center'>
@@ -121,18 +123,25 @@ const SignupPage = () => {
                         Already have an account? <Link to={'/login'} className="text-blue-500 underline">Login Now</Link>
                     </span>
 
-                    <Button type="submit" variant="contained" className="flex gap-2 items-center">
+                    <button
+                        type="submit"
+                        className="btn-primary-contained flex justify-center items-center gap-2"
+                        disabled={githubLoader || loading}
+                    >
                         {loading && <Loader size={18} className="animate-spin" />}
                         Signup
-                    </Button>
+                    </button>
 
-                    <Button
+                    <button
+
                         variant="outlined"
-                        className="flex gap-2 items-center mt-3"
+                        className='btn-primary-outlined flex justify-center items-center gap-2'
                         onClick={handleGithubLogin}
+                        disabled={githubLoader || loading}
                     >
+                        {githubLoader && <Loader size={20} className='animate-spin' />}
                         <Github size={20} /> Sign in with GitHub
-                    </Button>
+                    </button>
                 </form>
             </div>
         </div>

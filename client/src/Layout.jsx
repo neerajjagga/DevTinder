@@ -3,10 +3,12 @@ import { Outlet } from 'react-router-dom';
 import { useUserStore } from './store/user.store';
 import Loader from './components/Loader';
 import { useEffect } from 'react';
+import { useFeedStore } from './store/feed.store';
 
 const Layout = () => {
 
   const { checkAuth, checkingAuthLoader } = useUserStore();
+  const { getFeed, loading } = useFeedStore();
 
   useEffect(() => {
     checkAuth();
@@ -17,7 +19,7 @@ const Layout = () => {
   }
 
   return (
-    <div className="min-h-screen w-full bg-gray-950 relative text-white flex flex-col">
+    <div className="min-h-screen w-full bg-gray-950 relative text-white flex flex-col pb-10">
       <Header />
 
       <div className='mt-16'>

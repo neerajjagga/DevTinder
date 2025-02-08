@@ -1,13 +1,15 @@
 import Connection from '../models/connection.model.js'
-import User from "../models/user.js";
+import User from "../models/user.model.js";
 
 export const sendConnection = async (req, res) => {
     try {
         const fromUserId = req.user._id;
+        console.log(req.params);
+        
         const toUserId = req.params.toUserId;
 
         // first validate toUserId -> is user registered or not
-        const isToUserValid = await User.findOne({ _id: toUserId });
+        const isToUserValid = await User.findById(toUserId);
         if (!isToUserValid) {
             return res.status(400).json({
                 success: false,
@@ -57,7 +59,7 @@ export const sendConnection = async (req, res) => {
         const data = await connectionReq.save();
         res.status(200).json({
             success: true,
-            message: data.status === 'interested' ? 'Connection request sent successfully' : "You have successfully ignore this person",
+            message: data.status === 'interested' ? 'Connection request sent successfully' : `You have successfully ignored ${isToUserValid.name}`,
         })
     } catch (error) {
         res.status(400).send("Error : " + error.message);
@@ -96,8 +98,8 @@ export const reviewConnection = async (req, res) => {
 
         res.status(200).json({
             success: true,
-            message: status === 'accept' ? "Request rejected successfully" : "Request rejected successfully",
-        })
+            message: status === 'accept' ? "Request accepted successfully" : "Request rejected successfully",
+        });
 
     } catch (error) {
         res.status(400).send('Something went wrong' + error.message)
@@ -131,5 +133,3 @@ export const reviewConnection = async (req, res) => {
 //         res.status(400).send('Something went wrong' + error.message)
 //     }
 // })
-
-module.exports = { requestRouter };

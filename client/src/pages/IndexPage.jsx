@@ -1,4 +1,3 @@
-import { Button } from "@mui/material"
 import peopleImage from '../assets/people.png';
 import { useNavigate } from "react-router-dom";
 
@@ -16,7 +15,7 @@ const IndexPage = () => {
                                 Join a thriving community of developers, expand your network, and collaborate on exciting projects. Build, learn, and innovate together!"
                             </span>
                         </div>
-                        <Button onClick={() => navigate('/signup')} variant="contained">Get Started</Button>
+                        <button onClick={() => navigate('/signup')} className="btn-primary-contained"> Get Started </button>
                     </div>
                 </section>
 

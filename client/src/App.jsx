@@ -6,7 +6,7 @@ import LoginPage from './pages/LoginPage';
 import { Toaster } from 'react-hot-toast';
 import { useUserStore } from './store/user.store';
 import GithubCallbackPage from './pages/GithubCallbackPage';
-import HomePage from './pages/HomePage';
+import FeedPage from './pages/FeedPage';
 
 function App() {
 
@@ -16,11 +16,11 @@ function App() {
     <>
       <Routes>
         <Route path="/" element={<Layout />}>
-          <Route index element={<IndexPage />} />
+          <Route index element={user ? <FeedPage /> : <IndexPage />} />
           <Route path="signup" element={!user ? <SignupPage /> : <Navigate to={'/'} />} />
           <Route path="login" element={!user ? <LoginPage /> : <Navigate to={'/'} />} />
           <Route path="api/auth/github/callback" element={<GithubCallbackPage />} />
-          <Route path="home" element={user ? <HomePage /> : <Navigate to={'/login'} />} />
+          <Route path="home" element={user ? <FeedPage /> : <Navigate to={'/login'} />} />
         </Route>
       </Routes>
 

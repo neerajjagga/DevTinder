@@ -1,6 +1,6 @@
-const mongoose = require('mongoose');
+import mongoose from "mongoose";
 
-const connectionReqSchema = mongoose.Schema({
+const connectionSchema = mongoose.Schema({
     fromUserId : {
         type : mongoose.Schema.Types.ObjectId,
         ref : 'User',
@@ -27,7 +27,6 @@ const connectionReqSchema = mongoose.Schema({
     timestamps : true
 })
 
+const Connection = mongoose.model('Connection', connectionSchema);
 
-const connectionReqModel = mongoose.model('ConnectionReq', connectionReqSchema);
-
-module.exports = {connectionReqModel};
+export default Connection;

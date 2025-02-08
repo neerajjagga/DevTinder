@@ -7,14 +7,14 @@ export const useUserStore = create((set, get) => ({
     loading: false,
     checkingAuthLoader: false,
 
-    setUser : async (data) => {
-        set({ user : data });
+    setUser: async (data) => {
+        set({ user: data });
     },
-    
+
     githubLogin: () => {
-        window.location.href = "http://localhost:3000/api/auth/github"; 
+        window.location.href = "http://localhost:3000/api/auth/github";
     },
-    
+
     signupUser: async (data) => {
         set({ loading: true });
         try {
@@ -23,6 +23,7 @@ export const useUserStore = create((set, get) => ({
             set({ user: res.data.user, loading: false });
             toast.success("Account created successfully");
         } catch (error) {
+            set({ loading: false });
             console.log(error);
             toast.error(error.response.data?.message || "An unknown error occurred while signup");
         }
@@ -41,10 +42,10 @@ export const useUserStore = create((set, get) => ({
         }
     },
 
-    logoutUser: async (data) => {
+    logoutUser: async () => {
         set({ loading: true });
         try {
-            await axios.get("/auth/logout");
+            await axios.post("/auth/logout");
             set({ user: null, loading: false });
             toast.success("LoggedOut successfully");
         } catch (error) {
@@ -57,7 +58,7 @@ export const useUserStore = create((set, get) => ({
         set({ checkingAuthLoader: true })
         try {
             const res = await axios.get('/user/profile');
-            set({ user: res.data.user, checkingAuthLoader: false });
+            set({ user: res.data?.user, checkingAuthLoader: false });
             return true;
         } catch (error) {
             set({ user: null, checkingAuthLoader: false });

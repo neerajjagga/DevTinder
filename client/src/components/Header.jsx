@@ -2,6 +2,7 @@ import { Button } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { useUserStore } from '../store/user.store';
 import { Link } from 'react-router-dom';
+import { Bell } from 'lucide-react';
 
 const Header = () => {
   const navigate = useNavigate();
@@ -26,7 +27,7 @@ const Header = () => {
           <div className="flex-none gap-2">
             <div className="dropdown dropdown-end">
               <div tabIndex={0} role="button" className="btn btn-ghost btn-circle avatar">
-                <div className="w-11 rounded-full">
+                <div className="w-11 rounded-full flex flex-col">
                   <img className='h-11 rounded-full' src={user.profileImageUrl ? user.profileImageUrl : 'https://res.cloudinary.com/dabywmj68/image/upload/v1738950098/0684456b-aa2b-4631-86f7-93ceaf33303c_gckgiv.jpg'} alt="Profile Image" />
                 </div>
               </div>
@@ -34,12 +35,14 @@ const Header = () => {
                 tabIndex={0}
                 className="menu menu-sm dropdown-content bg-base-100 rounded-box z-[1] mt-3 w-52 p-2 shadow">
                 <li>
-                  <a className="justify-between">
+                  <Link className="justify-between">
                     Profile
-                  </a>
+                  </Link>
                 </li>
-                <li><a>Settings</a></li>
-                <li onClick={handleLogout}><a>Logout</a></li>
+                <li><Link to={'/notifications'}>Notifications</Link></li>
+                <li><Link to={'/connections'}>Connections</Link></li>
+                <li><Link to={'/chat'}>Chat</Link></li>
+                <li onClick={handleLogout}><Link>Logout</Link></li>
               </ul>
             </div>
           </div>

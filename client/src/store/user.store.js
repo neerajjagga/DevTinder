@@ -37,6 +37,7 @@ export const useUserStore = create((set, get) => ({
             set({ user: res.data.user, loading: false });
             toast.success("Successfully loggedIn");
         } catch (error) {
+            set({ loading: false });
             console.log(error);
             toast.error(error.response.data?.message || "An unknown error occurred while login");
         }
@@ -49,6 +50,7 @@ export const useUserStore = create((set, get) => ({
             set({ user: null, loading: false });
             toast.success("LoggedOut successfully");
         } catch (error) {
+            set({ loading: false });
             console.log(error);
             toast.error(error.response.data?.message || "An unknown error occurred while logout");
         }

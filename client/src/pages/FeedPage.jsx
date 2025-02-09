@@ -5,24 +5,34 @@ import FeedPageUserCard from '../components/FeedPageUserCard';
 
 const FeedPage = () => {
   const { user } = useUserStore();
-  const { feedUsers, getFeed, loading } = useFeedStore();
+  const { feedUsers, getFeed, loading, page, limit, setPageAndLimit } = useFeedStore();
   const [filteredFeed, setFilteredFeed] = useState([]);
   const [currentActiveCardIndex, setCurrentActiveCardIndex] = useState(0);
   const currentActiveCardUser = filteredFeed[currentActiveCardIndex];
 
   useEffect(() => {
+    console.log("Calling 1 useEffect");
+    
     const fetchFeed = async () => {
       console.log("Fetching feed...");
       await getFeed();
     };
 
     fetchFeed();
-  }, [getFeed]);
+  }, []);
 
   useEffect(() => {
+    console.log("Calling 2 useEffect");
     setFilteredFeed(feedUsers);
-    console.log("Updated filtered feed:", filteredFeed);
   }, [feedUsers]);
+
+  useEffect(() => {
+    if (currentActiveCardIndex === (filteredFeed.length > 0 && filteredFeed.length)) {
+      console.log("Inside currentActiveIndexCard useEffect");
+      setPageAndLimit(page + 1, limit);
+      getFeed();
+    }
+  }, [currentActiveCardIndex]);
 
   return (
     <>

@@ -5,7 +5,7 @@ export const sendConnection = async (req, res) => {
     try {
         const fromUserId = req.user._id;
         console.log(req.params);
-        
+
         const toUserId = req.params.toUserId;
 
         // first validate toUserId -> is user registered or not
@@ -36,7 +36,7 @@ export const sendConnection = async (req, res) => {
         }
 
         // if there is any existing connectioReq
-        const isExistingConnectionReq = await Connection .findOne({
+        const isExistingConnectionReq = await Connection.findOne({
             $or: [
                 { fromUserId, toUserId },
                 { fromUserId: toUserId, toUserId: fromUserId }
@@ -50,7 +50,7 @@ export const sendConnection = async (req, res) => {
             })
         }
 
-        const connectionReq = new Connection ({
+        const connectionReq = new Connection({
             fromUserId,
             toUserId,
             status
@@ -62,7 +62,8 @@ export const sendConnection = async (req, res) => {
             message: data.status === 'interested' ? 'Connection request sent successfully' : `You have successfully ignored ${isToUserValid.name}`,
         })
     } catch (error) {
-        res.status(400).send("Error : " + error.message);
+        console.log("Error coming while getting feed" + error.message);
+        res.status(500).json({ message: error.message })
     }
 }
 
@@ -80,7 +81,7 @@ export const reviewConnection = async (req, res) => {
                 message: "Invalid status"
             })
         }
-        const connectionRequest = await Connection .findOne({
+        const connectionRequest = await Connection.findOne({
             _id: requestId,
             toUserId: loggedInUser._id,
             status: "interested"
@@ -98,11 +99,82 @@ export const reviewConnection = async (req, res) => {
 
         res.status(200).json({
             success: true,
-            message: status === 'accept' ? "Request accepted successfully" : "Request rejected successfully",
+            message: status === 'accepted' ? "Request accepted successfully" : "Request rejected successfully",
         });
 
     } catch (error) {
-        res.status(400).send('Something went wrong' + error.message)
+        console.log("Error coming while getting feed" + error.message);
+        res.status(500).json({ message: error.message })
+    }
+}
+
+export const getMyConnections = async (req, res) => {
+    try {
+        const loggedInUser = req.user;
+
+        const connections = await Connection.find({
+            $or: [
+                { toUserId: loggedInUser._id },
+                { fromUserId: loggedInUser._id }
+            ],
+            status: "accepted"
+        })
+            .populate('fromUserId', 'name about profileImageUrl')
+            .populate('toUserId', 'name about profileImageUrl')
+
+
+        const data = connections.map((data) => {
+            if (data.fromUserId._id.toString() == loggedInUser._id.toString()) {
+                return data.toUserId;
+            }
+            else {
+                return data.fromUserId;
+            }
+        });
+
+        res.json({
+            success: true,
+            message: `Number of connections : ${connections.length}`,
+            myConnections: data,
+        });
+
+    } catch (error) {
+        console.log("Error coming while getting feed" + error.message);
+        res.status(500).json({ message: error.message })
+    }
+}
+
+export const getReceivedConnections = async (req, res) => {
+    try {
+        const loggedInUser = req.user;
+
+        const allPendingRequests = await Connection.find({
+            toUserId : loggedInUser._id,
+            status : "interested",
+        }).populate("fromUserId", "name about profileImageUrl"); 
+
+        if(allPendingRequests.length === 0) {
+            return res.status(200).json({
+                success : true,
+                message : "No pending requests",
+                requests : []
+            });
+        }
+
+        console.log(allPendingRequests);
+        
+
+        res.status(200).json({
+            success : true,
+            message : "success",
+            requests : allPendingRequests
+        });
+            
+    } catch (error) {
+        return res.status(500).json({
+            success : false,
+            message : "Something went wrong",
+        })
     }
 }
 

@@ -3,12 +3,10 @@ import { Outlet } from 'react-router-dom';
 import { useUserStore } from './store/user.store';
 import Loader from './components/Loader';
 import { useEffect } from 'react';
-import { useFeedStore } from './store/feed.store';
 
 const Layout = () => {
 
   const { checkAuth, checkingAuthLoader } = useUserStore();
-  const { getFeed, loading } = useFeedStore();
 
   useEffect(() => {
     checkAuth();

@@ -6,7 +6,7 @@ export const useFeedStore = create((set, get) => ({
     feedUsers: [],
     feedUsersCount: 0,
     page: 1,
-    limit: 10,
+    limit: 5,
     loading: false,
 
     setPageAndLimit: (pageNumber, limitNumber) => {
@@ -19,15 +19,13 @@ export const useFeedStore = create((set, get) => ({
 
         try {
             const res = await axios.get(`/feed?page=${page}&limit=${limit}`);
-            console.log(res);
 
-            set({
-                feedUsers: res.data?.users || [],
-                feedUsersCount: res.data?.users.length || 0,
+            set((prev) => ({
+                feedUsers: [...prev.feedUsers, ...res.data?.users],
+                feedUsersCount: prev.feedUsersCount + (res.data?.users.length || 0),
                 loading: false
-            });            
+            }));
             console.log(get().feedUsers);
-            
         } catch (error) {
             set({ loading: false });
             console.log(error);

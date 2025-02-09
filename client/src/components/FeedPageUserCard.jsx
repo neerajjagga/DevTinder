@@ -29,7 +29,7 @@ const FeedPageUserCard = ({ currentUser, currentActiveCardIndex, setCurrentActiv
                 )}
             </div>
             <div className="px-2 pb-2">
-                {currentUser.skills.length > 0 && currentUser.skills.map((skill, index) => (
+                {currentUser?.skills.length > 0 && currentUser.skills.map((skill, index) => (
                     <div key={index} className="bg-slate-800 text-gray-300 px-2 py-1 rounded-md inline-block mr-2 mt-1">
                         {skill}
                     </div>
